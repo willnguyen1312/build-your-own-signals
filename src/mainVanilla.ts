@@ -1,27 +1,28 @@
+import { computed, effect, signal } from "./signals";
+
+const [count, setCount] = signal(0);
+const doubleCount = computed(() => count() * 2);
+
 export const createApp = () => {
   const app = document.createElement("div");
-  let value = 0;
-  let doubleValue = value * 2;
-
   app.innerHTML = `
-    <h1>Vanilla app 🍦</h1>
-    <p id="value">Value: ${value}</p>
-    <p id="doubleValue">Double Value: ${doubleValue}</p>
-    <button id="increment">Increment</button>
-  `;
+  <h1>Vanilla app 🍦</h1>
+  <p id="value">Value: ${count()}</p>
+  <p id="doubleValue">Double Value: ${doubleCount()}</p>
+  <button id="increment">Increment</button>
+`;
+  document.body.appendChild(app);
 
-  app.querySelector("button#increment")?.addEventListener("click", () => {
-    value++;
-    doubleValue = value * 2;
-    app.querySelector("p#value")!.textContent = `Value: ${value}`;
-    app.querySelector(
-      "p#doubleValue"
-    )!.textContent = `Double Value: ${doubleValue}`;
-
-    console.log("Count value in Vanilla: ", value);
+  effect(() => {
+    document.querySelector("#value")!.textContent = `Value: ${count()}`;
+    document.querySelector("#doubleValue")!.textContent =
+      `Double Value: ${doubleCount()}`;
   });
 
-  document.body.appendChild(app);
+  document.querySelector("button#increment")!.addEventListener("click", () => {
+    setCount(count() + 1);
+  });
+
   return app;
 };
 

@@ -1,19 +1,26 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useReducer } from "react";
+import { signal, computed, effect } from "./signals";
+
+const [count, setCount] = signal(0);
+
+const doubleCount = computed(() => count() * 2);
 
 function App() {
-  const [count, setCount] = useState(0);
-  const doubleCount = useMemo(() => count * 2, [count]);
+  const rerender = useReducer((x) => x + 1, 0)[1];
 
   useEffect(() => {
-    console.log("Count value in React: ", count);
-  }, [count]);
+    effect(() => {
+      count();
+      rerender();
+    });
+  }, []);
 
   return (
     <>
       <h1>React app ⚛️</h1>
-      <p>Value: {count}</p>
-      <p>Double Value: {doubleCount}</p>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <p>Value: {count()}</p>
+      <p>Double Value: {doubleCount()}</p>
+      <button onClick={() => setCount(count() + 1)}>Increment</button>
     </>
   );
 }

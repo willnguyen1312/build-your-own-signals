@@ -10,9 +10,13 @@ test("app works correctly in React", async ({ expect }) => {
   render(<App />);
 
   expect(screen.getByText("Value: 0")).toBeInTheDocument();
+  expect(screen.getByText("Double Value: 0")).toBeInTheDocument();
 
   await user.click(screen.getByText("Increment"));
   expect(screen.getByText("Value: 1")).toBeInTheDocument();
   expect(screen.getByText("Double Value: 2")).toBeInTheDocument();
-  expect(consoleLogSpy).toHaveBeenCalledWith("Count value in React: ", 1);
+
+  await user.click(screen.getByText("Increment"));
+  expect(screen.getByText("Value: 2")).toBeInTheDocument();
+  expect(screen.getByText("Double Value: 4")).toBeInTheDocument();
 });
