@@ -4,10 +4,11 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <div>
-      <h1>Value: {count}</h1>
+    <>
+      <h1>React app ⚛️</h1>
+      <p>Value: {count}</p>
       <button onClick={() => setCount(count + 1)}>Increment</button>
-    </div>
+    </>
   );
 }
 
