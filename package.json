@@ -1,6 +1,10 @@
 {
   "name": "build-your-own-signals",
   "private": true,
+  "author": {
+    "name": "Nam nguyen",
+    "email": "nam.nguyen.node@gmail.com"
+  },
   "version": "0.0.0",
   "type": "module",
   "scripts": {
