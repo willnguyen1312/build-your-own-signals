@@ -1,4 +1,4 @@
-const createApp = () => {
+export const createApp = () => {
   const app = document.createElement("div");
   let value = 0;
 
