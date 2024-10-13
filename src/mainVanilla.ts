@@ -15,8 +15,7 @@ export const createApp = () => {
 
   effect(() => {
     document.querySelector("#value")!.textContent = `Value: ${count()}`;
-    document.querySelector("#doubleValue")!.textContent =
-      `Double Value: ${doubleCount()}`;
+    document.querySelector("#doubleValue")!.textContent = `Double Value: ${doubleCount()}`;
   });
 
   document.querySelector("button#increment")!.addEventListener("click", () => {

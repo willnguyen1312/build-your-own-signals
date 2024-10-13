@@ -1,5 +1,5 @@
 type Subscription = {
-  execute: () => void;
+  run: () => void;
   dependencies: Set<Set<Subscription>>;
 };
 
@@ -9,7 +9,7 @@ export function signal(initialValue: any = undefined) {
   let value = initialValue;
   const subscriptionSet: Set<Subscription> = new Set();
 
-  const getter = () => {
+  const get = () => {
     if (activeSubscription) {
       subscriptionSet.add(activeSubscription);
       activeSubscription.dependencies.add(subscriptionSet);
@@ -17,27 +17,25 @@ export function signal(initialValue: any = undefined) {
     return value;
   };
 
-  const setter = (nextValue: any) => {
+  const set = (nextValue: any) => {
     value = nextValue;
     for (const sub of [...subscriptionSet]) {
-      sub.execute();
+      sub.run();
     }
   };
 
-  return [getter, setter] as const;
+  return [get, set] as const;
 }
 
 export function effect(func: Function) {
   const subscription: Subscription = {
-    execute() {
+    run() {
       activeSubscription = subscription;
       func();
       activeSubscription = null;
     },
     dependencies: new Set(),
   };
-
-  subscription.execute();
 
   const cleanup = () => {
     for (const dep of subscription.dependencies) {
@@ -46,11 +44,13 @@ export function effect(func: Function) {
     subscription.dependencies.clear();
   };
 
+  subscription.run();
+
   return cleanup;
 }
 
 export function computed(fn: Function) {
-  const [getter, setter] = signal();
-  effect(() => setter(fn()));
-  return getter;
+  const [get, set] = signal();
+  effect(() => set(fn()));
+  return get;
 }

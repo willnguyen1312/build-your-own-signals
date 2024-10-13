@@ -9,7 +9,7 @@ function App() {
   const rerender = useReducer((x) => x + 1, 0)[1];
 
   useEffect(() => {
-    effect(() => {
+    return effect(() => {
       count();
       rerender();
     });

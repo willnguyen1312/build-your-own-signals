@@ -29,6 +29,6 @@ test("signals independently 🚀", ({ expect }) => {
   setValue(3);
   expect(computedValue()).toBe(6);
 
-  //   Since the effect is disposed, the mock function should not be called again
+  // Since the effect is disposed, the mock function should not be called again
   expect(mockFunc).toHaveBeenCalledTimes(2);
 });
