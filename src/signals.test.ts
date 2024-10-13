@@ -1,8 +1,7 @@
 import { test, vi } from "vitest";
-
 import { signal, computed, effect } from "./signals";
 
-test("signals work 🚀", ({ expect }) => {
+test("signals independently 🚀", ({ expect }) => {
   const mockFunc = vi.fn();
   const [getValue, setValue] = signal(1);
 
