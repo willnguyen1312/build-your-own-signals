@@ -1,4 +1,8 @@
-type Subscription = () => void;
+type Subscription = {
+  execute: () => void;
+  dependencies: Set<Set<Subscription>>;
+};
+
 let activeSubscription: Subscription | null = null;
 
 export function signal(initialValue: any = undefined) {
@@ -8,33 +12,45 @@ export function signal(initialValue: any = undefined) {
   const getter = () => {
     if (activeSubscription) {
       subscriptionSet.add(activeSubscription);
+      activeSubscription.dependencies.add(subscriptionSet);
     }
     return value;
   };
 
   const setter = (nextValue: any) => {
     value = nextValue;
-
-    for (const subscription of [...subscriptionSet]) {
-      subscription();
+    for (const sub of [...subscriptionSet]) {
+      sub.execute();
     }
   };
 
   return [getter, setter] as const;
 }
 
-export function effect(func: () => any) {
-  const run: Subscription = () => {
-    activeSubscription = run;
-    func();
-    activeSubscription = null;
+export function effect(func: Function) {
+  const subscription: Subscription = {
+    execute() {
+      activeSubscription = subscription;
+      func();
+      activeSubscription = null;
+    },
+    dependencies: new Set(),
   };
 
-  run();
+  subscription.execute();
+
+  const cleanup = () => {
+    for (const dep of subscription.dependencies) {
+      dep.delete(subscription);
+    }
+    subscription.dependencies.clear();
+  };
+
+  return cleanup;
 }
 
-export function computed(func: () => any) {
+export function computed(fn: Function) {
   const [getter, setter] = signal();
-  effect(() => setter(func()));
+  effect(() => setter(fn()));
   return getter;
 }
