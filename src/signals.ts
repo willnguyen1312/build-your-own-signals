@@ -4,6 +4,12 @@ type Subscription = {
 };
 
 const activeSubscriptions: Subscription[] = [];
+const globalPendingSubscriptions: Set<Subscription> = new Set();
+
+const subscribe = (subscription: Subscription, dependencies: Set<Subscription>) => {
+  dependencies.add(subscription);
+  subscription.dependencies.add(dependencies);
+};
 
 export function signal(initialValue: any = undefined) {
   let value = initialValue;
@@ -12,9 +18,15 @@ export function signal(initialValue: any = undefined) {
   const get = () => {
     const activeSubscription = activeSubscriptions[activeSubscriptions.length - 1];
     if (activeSubscription) {
-      subscriptionSet.add(activeSubscription);
-      activeSubscription.dependencies.add(subscriptionSet);
+      subscribe(activeSubscription, subscriptionSet);
     }
+
+    if (globalPendingSubscriptions.size > 0) {
+      for (const sub of globalPendingSubscriptions) {
+        subscribe(sub, subscriptionSet);
+      }
+    }
+
     return value;
   };
 
@@ -28,6 +40,13 @@ export function signal(initialValue: any = undefined) {
   return [get, set] as const;
 }
 
+const cleanup = (subscription: Subscription) => {
+  for (const dep of subscription.dependencies) {
+    dep.delete(subscription);
+  }
+  subscription.dependencies.clear();
+};
+
 export function effect(func: Function) {
   const subscription: Subscription = {
     run() {
@@ -40,15 +59,31 @@ export function effect(func: Function) {
 
   subscription.run();
 
-  const cleanup = () => {
-    for (const dep of subscription.dependencies) {
-      dep.delete(subscription);
-    }
-    subscription.dependencies.clear();
+  return () => {
+    cleanup(subscription);
+  };
+}
+
+export const startEffect = (callback: Function) => {
+  const subscription: Subscription = {
+    run() {
+      callback();
+    },
+    dependencies: new Set(),
   };
 
-  return cleanup;
-}
+  globalPendingSubscriptions.add(subscription);
+
+  const endEffect = () => {
+    globalPendingSubscriptions.delete(subscription);
+
+    return () => {
+      cleanup(subscription);
+    };
+  };
+
+  return endEffect;
+};
 
 export function computed(fn: Function) {
   const [get, set] = signal();

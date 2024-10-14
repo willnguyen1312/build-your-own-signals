@@ -1,5 +1,5 @@
 import { test, vi } from "vitest";
-import { signal, computed, effect } from "./signals";
+import { signal, computed, effect, startEffect } from "./signals";
 
 test("signals independently 🚀", ({ expect }) => {
   const mockFunc = vi.fn();
@@ -55,4 +55,28 @@ test("nested effects 🪺", ({ expect }) => {
 
   expect(mockFunc1).toHaveBeenCalledWith(2);
   expect(mockFunc2).toHaveBeenCalledWith(4);
+});
+
+test("pending subscriptions 🚦", ({ expect }) => {
+  const [getValue, setValue] = signal(1);
+
+  const mockFunc = vi.fn();
+
+  const endEffect = startEffect(() => {
+    mockFunc(getValue());
+  });
+
+  getValue();
+
+  const disposeEffect = endEffect();
+
+  setValue(2);
+
+  expect(mockFunc).toHaveBeenCalledWith(2);
+
+  disposeEffect();
+
+  setValue(3);
+
+  expect(mockFunc).toHaveBeenCalledTimes(1);
 });
