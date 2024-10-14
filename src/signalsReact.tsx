@@ -14,20 +14,27 @@ export function useSignalEffect(callback: Function) {
 
 export const useSignals = () => {
   const effectRef = useRef<(onStoreChange: () => void) => () => void>();
+  const endEffectRef = useRef<Function>();
+  const onStoreChangeRef = useRef<Function>();
   const versionRef = useRef(0);
+
+  const updateEndEffect = () => {
+    endEffectRef.current = startEffect(() => {
+      versionRef.current++;
+      onStoreChangeRef.current?.();
+    });
+  };
 
   if (!effectRef.current) {
     effectRef.current = (onStoreChange: () => void) => {
-      return startEffect(() => {
-        onStoreChange();
-        versionRef.current++;
-      });
+      onStoreChangeRef.current = onStoreChange;
+      updateEndEffect();
+
+      return endEffectRef.current?.();
     };
+
+    updateEndEffect();
   }
 
-  useSyncExternalStore(
-    effectRef.current,
-    () => versionRef.current,
-    () => versionRef.current,
-  );
+  useSyncExternalStore(effectRef.current, () => versionRef.current);
 };
