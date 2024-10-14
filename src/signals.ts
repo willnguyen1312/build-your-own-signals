@@ -32,7 +32,7 @@ export function signal(initialValue: any = undefined) {
 
   const set = (nextValue: any) => {
     value = nextValue;
-    for (const sub of [...subscriptionSet]) {
+    for (const sub of subscriptionSet) {
       sub.run();
     }
   };

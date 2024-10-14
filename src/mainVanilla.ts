@@ -6,10 +6,12 @@ const doubleCount = computed(() => count() * 2);
 export const createApp = () => {
   const app = document.createElement("div");
   app.innerHTML = `
-  <h1>Vanilla app 🍦</h1>
-  <p id="value">Value: ${count()}</p>
-  <p id="doubleValue">Double Value: ${doubleCount()}</p>
-  <button id="increment">Increment</button>
+  <div id="vanilla">
+    <h1>Vanilla app 🍦</h1>
+    <p id="value">Value: ${count()}</p>
+    <p id="doubleValue">Double Value: ${doubleCount()}</p>
+    <button id="increment">Increment</button>
+  </div>
 `;
   document.body.appendChild(app);
 

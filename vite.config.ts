@@ -7,7 +7,7 @@ export default defineConfig({
     sourcemap: true,
   },
   test: {
-    environment: "happy-dom",
     restoreMocks: true,
+    include: ["**/*.test.ts"],
   },
 });
