@@ -3,13 +3,14 @@ type Subscription = {
   dependencies: Set<Set<Subscription>>;
 };
 
-let activeSubscription: Subscription | null = null;
+const activeSubscriptions: Subscription[] = [];
 
 export function signal(initialValue: any = undefined) {
   let value = initialValue;
   const subscriptionSet: Set<Subscription> = new Set();
 
   const get = () => {
+    const activeSubscription = activeSubscriptions[activeSubscriptions.length - 1];
     if (activeSubscription) {
       subscriptionSet.add(activeSubscription);
       activeSubscription.dependencies.add(subscriptionSet);
@@ -30,12 +31,14 @@ export function signal(initialValue: any = undefined) {
 export function effect(func: Function) {
   const subscription: Subscription = {
     run() {
-      activeSubscription = subscription;
+      activeSubscriptions.push(subscription);
       func();
-      activeSubscription = null;
+      activeSubscriptions.pop();
     },
     dependencies: new Set(),
   };
+
+  subscription.run();
 
   const cleanup = () => {
     for (const dep of subscription.dependencies) {
@@ -43,8 +46,6 @@ export function effect(func: Function) {
     }
     subscription.dependencies.clear();
   };
-
-  subscription.run();
 
   return cleanup;
 }

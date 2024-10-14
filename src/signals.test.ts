@@ -32,3 +32,27 @@ test("signals independently 🚀", ({ expect }) => {
   // Since the effect is disposed, the mock function should not be called again
   expect(mockFunc).toHaveBeenCalledTimes(2);
 });
+
+test("nested effects 🪺", ({ expect }) => {
+  const mockFunc1 = vi.fn();
+  const mockFunc2 = vi.fn();
+  const [getValue, setValue] = signal(1);
+
+  effect(() => {
+    mockFunc1(getValue());
+
+    effect(() => {
+      mockFunc2(getValue() * 2);
+    });
+
+    mockFunc1(getValue());
+  });
+
+  expect(mockFunc1).toHaveBeenCalledWith(1);
+  expect(mockFunc2).toHaveBeenCalledWith(2);
+
+  setValue(2);
+
+  expect(mockFunc1).toHaveBeenCalledWith(2);
+  expect(mockFunc2).toHaveBeenCalledWith(4);
+});
