@@ -1,19 +1,15 @@
-import { useEffect, useReducer } from "react";
-import { signal, computed, effect } from "./signals";
+import { signal, computed, useSignalEffect, useSignals } from "./signalsReact";
 
 const [count, setCount] = signal(0);
 
 const doubleCount = computed(() => count() * 2);
 
 function App() {
-  const rerender = useReducer((x) => x + 1, 0)[1];
+  useSignals();
 
-  useEffect(() => {
-    return effect(() => {
-      count();
-      rerender();
-    });
-  }, []);
+  useSignalEffect(() => {
+    console.log("Count value: ", count());
+  });
 
   return (
     <>
