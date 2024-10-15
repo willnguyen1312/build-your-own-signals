@@ -1,11 +1,20 @@
-import { signal, computed, useSignalEffect, useSignals } from "./signalsReact";
+import {
+  signal,
+  computed,
+  useSignalEffect,
+  useSignals,
+  useSignal,
+  useComputed,
+} from "./signalsReact";
 
 const [count, setCount] = signal(0);
-
 const doubleCount = computed(() => count() * 2);
 
 function App() {
   useSignals();
+
+  // const [count, setCount] = useSignal(0);
+  // const doubleCount = useComputed(() => count() * 2);
 
   useSignalEffect(() => {
     console.log("Count value: ", count());
