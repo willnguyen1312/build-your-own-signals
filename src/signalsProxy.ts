@@ -6,9 +6,9 @@ type Subscription = {
 const activeSubscriptions: Subscription[] = [];
 const globalPendingSubscriptions: Set<Subscription> = new Set();
 
-const subscribe = (subscription: Subscription, dependencies: Set<Subscription>) => {
-  dependencies.add(subscription);
-  subscription.dependencies.add(dependencies);
+const subscribe = (subscription: Subscription, subscriptionSet: Set<Subscription>) => {
+  subscriptionSet.add(subscription);
+  subscription.dependencies.add(subscriptionSet);
 };
 
 export function signal<T>(initialValue: T) {
