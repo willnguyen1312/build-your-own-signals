@@ -16,7 +16,7 @@ export function signal<T>(initialValue: T) {
 
   return new Proxy(
     {
-      value: initialValue,
+      value: structuredClone(initialValue),
     },
     {
       get: (target, prop) => {

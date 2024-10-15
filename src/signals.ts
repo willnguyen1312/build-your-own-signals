@@ -12,7 +12,7 @@ const subscribe = (subscription: Subscription, dependencies: Set<Subscription>) 
 };
 
 export function signal<T>(initialValue: T) {
-  let value = initialValue;
+  let value = structuredClone(initialValue);
   const subscriptionSet: Set<Subscription> = new Set();
 
   const get = () => {
