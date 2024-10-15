@@ -12,32 +12,42 @@ const subscribe = (subscription: Subscription, dependencies: Set<Subscription>) 
 };
 
 export function signal<T>(initialValue: T) {
-  let value = initialValue;
   const subscriptionSet: Set<Subscription> = new Set();
 
-  const get = () => {
-    const activeSubscription = activeSubscriptions[activeSubscriptions.length - 1];
-    if (activeSubscription) {
-      subscribe(activeSubscription, subscriptionSet);
+  return new Proxy(
+    {
+      value: initialValue,
+    },
+    {
+      get: (target, prop) => {
+        if (prop === "value") {
+          const activeSubscription = activeSubscriptions[activeSubscriptions.length - 1];
+          if (activeSubscription) {
+            subscribe(activeSubscription, subscriptionSet);
+          }
+
+          if (globalPendingSubscriptions.size > 0) {
+            for (const sub of globalPendingSubscriptions) {
+              subscribe(sub, subscriptionSet);
+            }
+          }
+
+          return Reflect.get(target, prop);
+        }
+      },
+      set: (target, prop, value) => {
+        if (prop === "value") {
+          Reflect.set(target, prop, value);
+          for (const sub of subscriptionSet) {
+            sub.run();
+          }
+
+          return true;
+        }
+        return false;
+      },
     }
-
-    if (globalPendingSubscriptions.size > 0) {
-      for (const sub of globalPendingSubscriptions) {
-        subscribe(sub, subscriptionSet);
-      }
-    }
-
-    return value;
-  };
-
-  const set = (nextValue: T) => {
-    value = nextValue;
-    for (const sub of subscriptionSet) {
-      sub.run();
-    }
-  };
-
-  return [get, set] as const;
+  );
 }
 
 const cleanup = (subscription: Subscription) => {
@@ -85,8 +95,22 @@ export const startEffect = (callback: Function) => {
   return endEffect;
 };
 
-export function computed(fn: Function) {
-  const [get, set] = signal(undefined);
-  effect(() => set(fn()));
-  return get;
+export function computed<T>(fn: () => T) {
+  const signalResult = signal(undefined) as { value: T };
+  effect(() => {
+    signalResult.value = fn();
+  });
+
+  return new Proxy(
+    {
+      value: signalResult.value,
+    },
+    {
+      get: (_, prop) => {
+        if (prop === "value") {
+          return signalResult.value;
+        }
+      },
+    }
+  );
 }

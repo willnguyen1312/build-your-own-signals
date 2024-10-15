@@ -1,31 +1,17 @@
-import {
-  signal,
-  computed,
-  useSignalEffect,
-  useSignals,
-  useSignal,
-  useComputed,
-} from "./signalsReact";
+import { signal, computed, useSignals } from "./signalsReactProxy";
 
-const [count, setCount] = signal(0);
-const doubleCount = computed(() => count() * 2);
+const countSignal = signal(0);
+const doubleCount = computed(() => countSignal.value * 2);
 
 function App() {
   useSignals();
 
-  // const [count, setCount] = useSignal(0);
-  // const doubleCount = useComputed(() => count() * 2);
-
-  useSignalEffect(() => {
-    console.log("Count value: ", count());
-  });
-
   return (
     <>
       <h1>React app ⚛️</h1>
-      <p>Value: {count()}</p>
-      <p>Double Value: {doubleCount()}</p>
-      <button onClick={() => setCount(count() + 1)}>Increment</button>
+      <p>Value: {countSignal.value}</p>
+      <p>Double Value: {doubleCount.value}</p>
+      <button onClick={() => countSignal.value++}>Increment</button>
     </>
   );
 }
