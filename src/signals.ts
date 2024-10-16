@@ -3,8 +3,7 @@ type Subscription = {
   dependencies: Set<Set<Subscription>>;
 };
 
-const activeSubscriptions: Subscription[] = [];
-const globalPendingSubscriptions: Set<Subscription> = new Set();
+const pendingSubscriptions: Set<Subscription> = new Set();
 
 const subscribe = (subscription: Subscription, subscriptionSet: Set<Subscription>) => {
   subscriptionSet.add(subscription);
@@ -16,13 +15,8 @@ export function signal<T>(initialValue: T) {
   const subscriptionSet: Set<Subscription> = new Set();
 
   const get = () => {
-    const activeSubscription = activeSubscriptions[activeSubscriptions.length - 1];
-    if (activeSubscription) {
-      subscribe(activeSubscription, subscriptionSet);
-    }
-
-    if (globalPendingSubscriptions.size > 0) {
-      for (const sub of globalPendingSubscriptions) {
+    if (pendingSubscriptions.size > 0) {
+      for (const sub of pendingSubscriptions) {
         subscribe(sub, subscriptionSet);
       }
     }
@@ -48,20 +42,9 @@ const cleanup = (subscription: Subscription) => {
 };
 
 export function effect(func: Function) {
-  const subscription: Subscription = {
-    run() {
-      activeSubscriptions.push(subscription);
-      func();
-      activeSubscriptions.pop();
-    },
-    dependencies: new Set(),
-  };
-
-  subscription.run();
-
-  return () => {
-    cleanup(subscription);
-  };
+  const endEffect = startEffect(func);
+  func();
+  return endEffect();
 }
 
 export const startEffect = (callback: Function) => {
@@ -72,10 +55,10 @@ export const startEffect = (callback: Function) => {
     dependencies: new Set(),
   };
 
-  globalPendingSubscriptions.add(subscription);
+  pendingSubscriptions.add(subscription);
 
   const endEffect = () => {
-    globalPendingSubscriptions.delete(subscription);
+    pendingSubscriptions.delete(subscription);
 
     return () => {
       cleanup(subscription);

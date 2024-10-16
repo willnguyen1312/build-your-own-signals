@@ -8,6 +8,7 @@ export default defineConfig({
   },
   test: {
     restoreMocks: true,
-    include: ["**/*.test.ts"],
+    environment: "happy-dom",
+    include: ["**/*.test.{ts,tsx}"],
   },
 });
