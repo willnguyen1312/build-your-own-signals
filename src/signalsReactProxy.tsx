@@ -1,33 +1,15 @@
-import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useReducer, useRef } from "react";
 import { effect, computed, signal, startEffect } from "./signalsProxy";
 
 export { signal, effect, computed };
 
 export const useSignals = () => {
-  const effectRef = useRef<(onStoreChange: () => void) => () => void>();
-  const endEffectRef = useRef<Function>();
-  const onStoreChangeRef = useRef<Function>();
-  const versionRef = useRef(0);
+  const rerender = useReducer((x) => x + 1, 0)[1];
+  const endEffectRef = useRef(startEffect(rerender));
 
-  const updateEndEffect = () => {
-    endEffectRef.current = startEffect(() => {
-      versionRef.current++;
-      onStoreChangeRef.current?.();
-    });
-  };
-
-  if (!effectRef.current) {
-    effectRef.current = (onStoreChange: () => void) => {
-      onStoreChangeRef.current = onStoreChange;
-      updateEndEffect();
-
-      return endEffectRef.current?.();
-    };
-
-    updateEndEffect();
-  }
-
-  useSyncExternalStore(effectRef.current, () => versionRef.current);
+  useEffect(() => {
+    endEffectRef.current();
+  }, []);
 };
 
 export function useSignal<T>(initialValue: T) {

@@ -12,32 +12,24 @@ const subscribe = (subscription: Subscription, subscriptionSet: Set<Subscription
 
 export function signal<T>(initialValue: T) {
   const subscriptionSet: Set<Subscription> = new Set();
+  let value = structuredClone(initialValue);
 
-  const target = {
-    value: structuredClone(initialValue),
-  };
-
-  let _value = target.value;
-
-  Object.defineProperty(target, "value", {
-    get() {
+  return {
+    get value() {
       if (pendingSubscriptions.size > 0) {
         for (const sub of pendingSubscriptions) {
           subscribe(sub, subscriptionSet);
         }
       }
-
-      return _value;
+      return value;
     },
-    set(newValue) {
-      _value = newValue;
+    set value(newValue) {
+      value = newValue;
       for (const sub of subscriptionSet) {
         sub.run();
       }
     },
-  });
-
-  return target;
+  };
 }
 
 const cleanup = (subscription: Subscription) => {

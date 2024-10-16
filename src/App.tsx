@@ -1,4 +1,4 @@
-import { signal, computed, useSignals } from "./signalsReactProxy";
+import { signal, computed, useSignals } from "./signalsReactObject";
 
 const countSignal = signal(0);
 const doubleCount = computed(() => countSignal.value * 2);
