@@ -31,6 +31,7 @@ export function signal<T>(initialValue: T) {
       },
       set: (target, prop, value) => {
         if (prop === "value") {
+          pendingSubscriptions.clear();
           Reflect.set(target, prop, value);
           for (const sub of subscriptionSet) {
             sub.run();

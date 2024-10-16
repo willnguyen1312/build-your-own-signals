@@ -5,10 +5,14 @@ export { signal, effect, computed };
 
 export const useSignals = () => {
   const rerender = useReducer((x) => x + 1, 0)[1];
-  const endEffectRef = useRef(startEffect(rerender));
+  const endEffectRef = useRef<ReturnType<typeof startEffect>>();
+
+  if (!endEffectRef.current) {
+    endEffectRef.current = startEffect(rerender);
+  }
 
   useEffect(() => {
-    endEffectRef.current();
+    endEffectRef.current?.();
   }, []);
 };
 

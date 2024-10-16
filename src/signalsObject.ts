@@ -24,6 +24,7 @@ export function signal<T>(initialValue: T) {
       return value;
     },
     set value(newValue) {
+      pendingSubscriptions.clear();
       value = newValue;
       for (const sub of subscriptionSet) {
         sub.run();
