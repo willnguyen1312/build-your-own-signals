@@ -16,9 +16,8 @@ export function signal<T>(initialValue: T) {
 
   const get = () => {
     if (pendingSubscriptions.size > 0) {
-      for (const sub of pendingSubscriptions) {
-        subscribe(sub, subscriptionSet);
-      }
+      const lastSubscription = Array.from(pendingSubscriptions)[pendingSubscriptions.size - 1];
+      subscribe(lastSubscription, subscriptionSet);
     }
 
     return value;

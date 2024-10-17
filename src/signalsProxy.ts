@@ -21,9 +21,9 @@ export function signal<T>(initialValue: T) {
       get: (target, prop) => {
         if (prop === "value") {
           if (pendingSubscriptions.size > 0) {
-            for (const sub of pendingSubscriptions) {
-              subscribe(sub, subscriptionSet);
-            }
+            const lastSubscription =
+              Array.from(pendingSubscriptions)[pendingSubscriptions.size - 1];
+            subscribe(lastSubscription, subscriptionSet);
           }
 
           return Reflect.get(target, prop);
