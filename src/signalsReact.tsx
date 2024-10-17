@@ -1,19 +1,17 @@
-import { useEffect, useMemo, useRef, useReducer } from "react";
-import { effect, computed, signal, startEffect } from "./signals";
+import { useEffect, useMemo, useReducer, useRef } from "react";
+import { computed, effect, signal, startSubscription } from "./signals";
 
-export { signal, effect, computed };
+export { computed, effect, signal };
 
 export const useSignals = () => {
   const rerender = useReducer((x) => x + 1, 0)[1];
-  const endEffectRef = useRef<ReturnType<typeof startEffect>>();
+  const endSubscriptionRef = useRef<ReturnType<typeof startSubscription>>();
 
-  if (!endEffectRef.current) {
-    endEffectRef.current = startEffect(rerender);
+  if (!endSubscriptionRef.current) {
+    endSubscriptionRef.current = startSubscription(rerender);
   }
 
-  useEffect(() => {
-    endEffectRef.current?.();
-  }, []);
+  useEffect(() => endSubscriptionRef.current!(), []);
 };
 
 export function useSignal<T>(initialValue: T): [() => T, (nextValue: T) => void] {

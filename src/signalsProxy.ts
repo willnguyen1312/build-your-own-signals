@@ -54,12 +54,12 @@ const cleanup = (subscription: Subscription) => {
 };
 
 export function effect(func: Function) {
-  const endEffect = startEffect(func);
+  const endEffect = startSubscription(func);
   func();
   return endEffect();
 }
 
-export const startEffect = (callback: Function) => {
+export const startSubscription = (callback: Function) => {
   const subscription: Subscription = {
     run() {
       callback();
@@ -69,7 +69,7 @@ export const startEffect = (callback: Function) => {
 
   pendingSubscriptions.add(subscription);
 
-  const endEffect = () => {
+  const endSubscription = () => {
     pendingSubscriptions.delete(subscription);
 
     return () => {
@@ -77,7 +77,7 @@ export const startEffect = (callback: Function) => {
     };
   };
 
-  return endEffect;
+  return endSubscription;
 };
 
 export function computed<T>(fn: () => T) {

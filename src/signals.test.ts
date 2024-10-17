@@ -1,5 +1,5 @@
 import { test, vi } from "vitest";
-import { signal, computed, effect, startEffect } from "./signals";
+import { computed, effect, signal, startSubscription } from "./signals";
 
 test("signals independently 🚀", ({ expect }) => {
   const mockFunc = vi.fn();
@@ -62,7 +62,7 @@ test("pending subscriptions 🚦", ({ expect }) => {
 
   const mockFunc = vi.fn();
 
-  const endEffect = startEffect(() => {
+  const endEffect = startSubscription(() => {
     mockFunc(getValue());
   });
 
