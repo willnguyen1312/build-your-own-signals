@@ -11,27 +11,25 @@ const subscribe = (subscription: Subscription, subscriptionSet: Set<Subscription
 };
 
 export function signal<T>(initialValue: T) {
-  let value = structuredClone(initialValue);
   const subscriptionSet: Set<Subscription> = new Set();
+  let value = structuredClone(initialValue);
 
-  const get = () => {
-    if (pendingSubscriptions.size > 0) {
-      const lastSubscription = Array.from(pendingSubscriptions)[pendingSubscriptions.size - 1];
-      subscribe(lastSubscription, subscriptionSet);
-    }
-
-    return value;
+  return {
+    get value() {
+      if (pendingSubscriptions.size > 0) {
+        const lastSubscription = Array.from(pendingSubscriptions)[pendingSubscriptions.size - 1];
+        subscribe(lastSubscription, subscriptionSet);
+      }
+      return value;
+    },
+    set value(newValue) {
+      pendingSubscriptions.clear();
+      value = newValue;
+      for (const sub of subscriptionSet) {
+        sub.run();
+      }
+    },
   };
-
-  const set = (nextValue: T) => {
-    pendingSubscriptions.clear();
-    value = nextValue;
-    for (const sub of subscriptionSet) {
-      sub.run();
-    }
-  };
-
-  return [get, set] as const;
 }
 
 const cleanup = (subscription: Subscription) => {
@@ -68,8 +66,13 @@ export const startSubscription = (callback: Function) => {
   return endSubscription;
 };
 
-export function computed(fn: Function) {
-  const [get, set] = signal(undefined);
-  effect(() => set(fn()));
-  return get;
+export function computed<T>(fn: () => T) {
+  const signalResult = signal(undefined) as { value: T };
+  effect(() => (signalResult.value = fn()));
+
+  return {
+    get value() {
+      return signalResult.value;
+    },
+  };
 }
