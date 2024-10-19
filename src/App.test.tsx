@@ -38,6 +38,21 @@ test("computed", ({ expect }) => {
   expect(doubleCount.value).toBe(4);
 });
 
+test("signal, computed and effect together", ({ expect }) => {
+  const countSignal = signal(1);
+  const doubleCount = computed(() => countSignal.value * 2);
+  const mockCallback = vi.fn();
+
+  effect(() => mockCallback(doubleCount.value));
+
+  expect(mockCallback).toHaveBeenCalledTimes(1);
+  expect(mockCallback).toHaveBeenNthCalledWith(1, 2);
+
+  countSignal.value = 2;
+  expect(mockCallback).toHaveBeenCalledTimes(2);
+  expect(mockCallback).toHaveBeenNthCalledWith(2, 4);
+});
+
 test("React with signals", async ({ expect }) => {
   const user = userEvent.setup();
   render(<App />);
