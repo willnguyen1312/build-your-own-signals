@@ -24,7 +24,6 @@ export function signal<T>(initialValue: T) {
   };
 
   const set = (nextValue: T) => {
-    pendingSubscriptions.clear();
     value = structuredClone(nextValue);
     for (const sub of subscriptionSet) {
       sub.run();
