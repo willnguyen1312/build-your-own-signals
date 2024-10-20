@@ -16,7 +16,7 @@ test("signal", ({ expect }) => {
   expect(countSignal.value).toBe(1);
 });
 
-test("effect", ({ expect }) => {
+test("signal and effect", ({ expect }) => {
   const mockCallback = vi.fn();
   const countSignal = signal(0);
   effect(() => mockCallback(countSignal.value));
@@ -29,7 +29,7 @@ test("effect", ({ expect }) => {
   expect(mockCallback).toHaveBeenNthCalledWith(2, 1);
 });
 
-test("computed", ({ expect }) => {
+test("signal and computed", ({ expect }) => {
   const countSignal = signal(1);
   const doubleCount = computed(() => countSignal.value * 2);
   expect(doubleCount.value).toBe(2);
