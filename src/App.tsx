@@ -1,8 +1,8 @@
-import { signal, computed } from "./signals";
-import { useSignals } from "./signalsReact";
+// import { signal, computed } from "./signals";
+// import { useSignals } from "./signalsReact";
 
-// import { signal, computed } from "@preact/signals-core";
-// import { useSignals } from "@preact/signals-react/runtime";
+import { signal, computed } from "@preact/signals-core";
+import { useSignals } from "@preact/signals-react/runtime";
 
 const countSignal = signal(0);
 const doubleCount = computed(() => countSignal.value * 2);

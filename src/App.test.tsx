@@ -3,8 +3,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "vitest-dom/extend-expect";
 
-import { signal, computed, effect } from "./signals";
-// import { signal, computed, effect } from "@preact/signals-core";
+// import { signal, computed, effect } from "./signals";
+import { signal, computed, effect } from "@preact/signals-core";
 
 import App from "./App";
 
