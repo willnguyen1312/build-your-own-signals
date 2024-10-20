@@ -42,7 +42,7 @@ export function signal<T>(initialValue: T) {
 
         return false;
       },
-    }
+    },
   );
 }
 
@@ -96,6 +96,6 @@ export function computed<T>(fn: () => T) {
           return signalResult.value;
         }
       },
-    }
+    },
   );
 }
