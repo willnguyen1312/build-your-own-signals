@@ -2,9 +2,9 @@ import { useSignal, useSignals } from "./signalsReactObject";
 
 function ExpensiveComponent() {
   console.log("ExpensiveComponent rendered");
-  // Block 3s
+  // Block 2s
   const start = Date.now();
-  while (Date.now() - start < 3000) {}
+  while (Date.now() - start < 2000) {}
   return <p>ExpensiveComponent</p>;
 }
 

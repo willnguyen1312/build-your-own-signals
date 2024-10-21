@@ -1,11 +1,9 @@
-import { signal, computed, useSignals } from "./signalsReactObject";
+import { signal, computed } from "@preact/signals-core";
 
 const countSignal = signal(0);
 const doubleCount = computed(() => countSignal.value * 2);
 
 function App() {
-  useSignals();
-
   return (
     <>
       <h1>React app ⚛️</h1>
