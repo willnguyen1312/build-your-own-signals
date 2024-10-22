@@ -1,4 +1,4 @@
-import { useSignal, useSignals } from "./signalsReactObject";
+import { useSignal } from "@preact/signals-react/runtime";
 
 function ExpensiveComponent() {
   console.log("ExpensiveComponent rendered");
@@ -13,26 +13,20 @@ function App() {
   return (
     <>
       <h1>React app ⚛️</h1>
-      <ButtonCount
-        count={count}
-        onClick={() => {
-          count.value++;
-        }}
-      />
+      <ValueDisplay value={count} />
+      <ValueIncrementButton onClick={() => count.value++} />
 
       <ExpensiveComponent />
     </>
   );
 }
 
-function ButtonCount({ count, onClick }) {
-  useSignals();
-  return (
-    <>
-      <p>Value: {count.value}</p>
-      <button onClick={onClick}>Increment</button>
-    </>
-  );
+function ValueDisplay({ value }) {
+  return <p>Value: {value.value}</p>;
+}
+
+function ValueIncrementButton({ onClick }) {
+  return <button onClick={onClick}>Increment</button>;
 }
 
 export default App;

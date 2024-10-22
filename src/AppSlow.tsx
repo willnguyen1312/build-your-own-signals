@@ -13,25 +13,20 @@ function App() {
   return (
     <>
       <h1>React app ⚛️</h1>
-      <ButtonCount
-        count={count}
-        onClick={() => {
-          setCount(count + 1);
-        }}
-      />
+      <ValueDisplay value={count} />
+      <ValueIncrementButton onClick={() => setCount(count + 1)} />
 
       <ExpensiveComponent />
     </>
   );
 }
 
-function ButtonCount({ count, onClick }) {
-  return (
-    <>
-      <p>Value: {count}</p>
-      <button onClick={onClick}>Increment</button>
-    </>
-  );
+function ValueDisplay({ value }) {
+  return <p>Value: {value.value}</p>;
+}
+
+function ValueIncrementButton({ onClick }) {
+  return <button onClick={onClick}>Increment</button>;
 }
 
 export default App;
