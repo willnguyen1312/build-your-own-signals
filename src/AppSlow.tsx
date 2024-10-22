@@ -22,7 +22,7 @@ function App() {
 }
 
 function ValueDisplay({ value }) {
-  return <p>Value: {value.value}</p>;
+  return <p>Value: {value}</p>;
 }
 
 function ValueIncrementButton({ onClick }) {
