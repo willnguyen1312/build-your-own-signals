@@ -1,7 +1,7 @@
 import { useSignal } from "@preact/signals-react/runtime";
 
 function ExpensiveComponent() {
-  console.log("ExpensiveComponent rendered");
+  console.log("rendering ExpensiveComponent");
   // Block 2s
   const start = Date.now();
   while (Date.now() - start < 2000) {}
