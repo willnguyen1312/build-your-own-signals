@@ -1,4 +1,4 @@
-import { useSignal, useSignals } from "./signalsReactObject";
+import { useSignal, useSignals } from "./signalsReact";
 
 function ExpensiveComponent() {
   console.log("rendering ExpensiveComponent");
@@ -9,21 +9,21 @@ function ExpensiveComponent() {
 }
 
 function App() {
-  const count = useSignal(0);
+  const [getCount, setCount] = useSignal(0);
   return (
     <>
       <h1>React app ⚛️</h1>
-      <ValueDisplay value={count} />
-      <ValueIncrementButton onClick={() => count.value++} />
+      <ValueDisplay getValue={getCount} />
+      <ValueIncrementButton onClick={() => setCount(getCount() + 1)} />
 
       <ExpensiveComponent />
     </>
   );
 }
 
-function ValueDisplay({ value }) {
+function ValueDisplay({ getValue }) {
   useSignals();
-  return <p>Value: {value.value}</p>;
+  return <p>Value: {getValue()}</p>;
 }
 
 function ValueIncrementButton({ onClick }) {
