@@ -1,10 +1,10 @@
-import { useSignal } from "@preact/signals-react/runtime";
+import { useSignal, useSignals } from "./signalsReactObject";
 
 function ExpensiveComponent() {
   console.log("rendering ExpensiveComponent");
-  // Block 2s
+  // Block 1s
   const start = Date.now();
-  while (Date.now() - start < 2000) {}
+  while (Date.now() - start < 1000) {}
   return <p>ExpensiveComponent</p>;
 }
 
@@ -22,6 +22,7 @@ function App() {
 }
 
 function ValueDisplay({ value }) {
+  useSignals();
   return <p>Value: {value.value}</p>;
 }
 

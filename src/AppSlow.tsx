@@ -2,9 +2,9 @@ import { useState } from "react";
 
 function ExpensiveComponent() {
   console.log("rendering ExpensiveComponent");
-  // Block 2s
+  // Block 1s
   const start = Date.now();
-  while (Date.now() - start < 2000) {}
+  while (Date.now() - start < 1000) {}
   return <p>ExpensiveComponent</p>;
 }
 
