@@ -1,5 +1,7 @@
 # Build your own signals 😊
 
+https://namnguyen.design/blog/2024-10-15-build-your-own-signals-%F0%9F%9A%A5/
+
 ## Development
 
 ```bash
