@@ -12,7 +12,7 @@
     "test": "vitest",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
-    "test:all": "npm-run-all test:unit test:e2e",
+    "test:all": "run-p test:unit test:e2e",
     "build": "vite build",
     "preview": "vite preview"
   },
