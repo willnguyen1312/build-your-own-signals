@@ -1,6 +1,4 @@
-# Build your own signals 😊
-
-https://namnguyen.design/blog/2024-10-15-build-your-own-signals-%F0%9F%9A%A5/
+# <a href="https://namnguyen.design/blog/2024-10-15-build-your-own-signals-%F0%9F%9A%A5/" target="_blank">Build your own signals</a> 😊
 
 ## Development
 
