@@ -37,5 +37,9 @@ export const startSubscription = (fn: Function) => {
 export function computed<T>(fn: () => T) {
   const signalResult = signal(undefined) as { value: T };
   effect(() => (signalResult.value = fn()));
-  return signalResult;
+  return {
+    get value() {
+      return signalResult.value;
+    },
+  };
 }
